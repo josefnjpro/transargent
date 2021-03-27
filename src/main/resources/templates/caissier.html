@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:http="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:c="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/js/jquery-dateformat.js"></script>
+    <link rel="stylesheet" href="/css/forall.css">
+
+</head>
+<body>
+
+<div class="container">
+    <div class="container col-md-12">
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <!-- Toggler/collapsibe Button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <t class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/all">Ges_client</a>
+                    </li>
+                </ul>
+            </div>
+            <a type="button" href="/login" id="deconnexion" class="btn btn-info" data-toggle="" data-target="" data-whatever="">Deconnexion</a>
+        </nav>
+        <br/>
+        <button type="button" id="nouveau" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">NOUVEAU</button>
+        <br/><br/>
+        <div class="card">
+            <div class="card-header"><h4>Liste des Caissiers</h4></div>
+            <div class="card-body">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                    <tr>
+                        <th>NCI</th>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>Tel</th>
+                        <th>Code</th>
+                        <th>Photo</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Solde</th>
+                        <th>Numero Contrat</th>
+                        <th>Update</th>
+                        <th>Supprimer</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="caissier:${caissiers}">
+                        <td th:text="${caissier.nci}"></td>
+                        <td th:text="${caissier.nom}"></td>
+                        <td th:text="${caissier.prenom}"></td>
+                        <td th:text="${caissier.telephone}"></td>
+                        <td th:text="${caissier.code}"></td>
+                        <td>
+                            <img th:src="@{'/images/'+${caissier.photo}}" style="width: 40px; height: 50px;">
+                        </td>
+                        <td th:text="${caissier.username}"></td>
+                        <td th:text="${caissier.email}"></td>
+                        <td th:text="${caissier.compte.solde}"></td>
+                        <td th:text="${caissier.contrat.numcontrat}"></td>
+                        <td class="text-center"><a class='btn btn-info btn-xs' href="#"><span class="glyphicon glyphicon-edit"></span> Edit</a></td>
+                        <td><a href="#" class="btn btn-danger remove" th:data="${caissier.id+'-'+caissier.nom+'-'+caissier.prenom+'-'+caissier.nci+'-'+caissier.code}" id="remove" role="button" data-toggle="modal" data-target="#confirmModal"><span class="glyphicon glyphicon-remove"></span>Supprimer</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form enctype="multipart/form-data" action="#" th:action="@{/caissier/add}" th:object="${caissier}" id="form1" method="post"  >
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nci" class="col-form-label">NCI:</label>
+                        <input th:field="*{nci}" type="text" name="nci" class="form-control" id="nci">
+                    </div>
+                    <div class="form-group">
+                        <label for="nom" class="col-form-label">Nom:</label>
+                        <input th:field="*{nom}" type="text" name="nom" class="form-control" id="nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="prenom" class="col-form-label">Prenom:</label>
+                        <input th:field="*{prenom}" type="text" name="prenom" class="form-control" id="prenom">
+                    </div>
+                    <div class="form-group">
+                        <label for="tel" class="col-form-label">Telephone:</label>
+                        <input th:field="*{telephone}" type="text" name="tel" class="form-control" id="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="code" class="col-form-label">Code:</label>
+                        <input th:field="*{code}" type="text" name="code" class="form-control" id="code">
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="col-form-label">Username:</label>
+                        <input th:field="*{username}" type="text" name="username" class="form-control" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-form-label">Email:</label>
+                        <input th:field="*{email}" type="text" name="email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="numContrat" class="col-form-label">Numero Contrat:</label>
+                        <input th:field="*{contrat.numcontrat}" type="text" name="numContrat" class="form-control" id="numContrat">
+                    </div>
+                    <div class="form-group">
+                        <label for="file" class="col-form-label">Photo:</label>
+                        <input accept=".png,.jpg, .jpeg" type="file" th:field="*{files}" class="form-control" id="file">
+                    </div>
+                    <div class="form-group">
+                        <img th:src="@{image/imgui-zac}" id="image"/>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="save" type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+                <input type="hidden" id="action" name="action" value="add">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Suppression d'un caissier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form2" th:action="@{/caissier/remove}" method="post">
+                <div class="modal-body" id="contentConfirm">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+                <input type="hidden" id="caissierId" name="caissierId">
+            </form>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $(document).ready(function () {
+        $("#save").click(function () {
+        });
+        $("#nouveau").click(function () {
+            $('#form1').attr('action','/caissier/add');
+            $('.masquer').show();
+            $('#code').val("");
+            //$('#photo').val("");
+            $('#numContrat').val("");
+            $('#prenom').val("");
+            $('#nom').val("");
+            $('#tel').val("");
+            $('#nci').val("");
+        })
+
+    });
+    function imageIsLoaded(e) {
+        //$("#file").css("color","green");
+        //$('#image_preview').css("display", "block");
+        $('#image').attr('src', e.target.result);
+        $('#image').attr('width', '100px');
+        $('#image').attr('height', '100px');
+    };
+    $('#file').change(function () {
+        if (this.files && this.files[0]) {
+            var file = this.files[0];
+            var imagefile = file.type;
+            var reader = new FileReader();
+            reader.onload = imageIsLoaded;
+            reader.readAsDataURL(this.files[0]);
+        }
+
+    });
+
+    $('.remove').click(function () {
+        var data = $(this).attr("data").split('-');
+        $('#caissierId').val(data[0]);
+        $('#contentConfirm').empty();
+        $('#contentConfirm').append('Êtes-vous sur de vouloir supprimer ['+data[2]+' '+data[1]+' '+data[3]+']');
+    });
+
+</script>
+
+</body>
+</html>

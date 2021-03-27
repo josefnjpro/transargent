@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="/js/jquery-dateformat.js"></script>
+    <link rel="stylesheet" href="/css/forall.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="container col-md-12">
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <!-- Toggler/collapsibe Button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/caissier/all">Ges_caissier</a>
+                    </li>
+                </ul>
+            </div>
+            <a type="button" href="/login" id="deconnexion" class="btn btn-info" data-toggle="" data-target="" data-whatever="">Deconnexion</a>
+        </nav>
+        <br/>
+        <button type="button" id="nouveau" class="btn btn-primary nouveau" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">NOUVEAU</button>
+        <br/><br/>
+        <div class="card">
+            <div class="card-header"><h4>Liste des Clients</h4></div>
+            <div class="card-body">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                    <tr>
+                        <th>NCI</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Tel</th>
+                        <th>Update</th>
+                        <th>Supprimer</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="client:${clients}">
+                        <td th:text="${client.nci}"></td>
+                        <td th:text="${client.nom}"></td>
+                        <td th:text="${client.prenom}"></td>
+                        <td th:text="${client.telephone}"></td>
+                        <td class="text-center"><a class='btn btn-info btn-xs' href="#"><span class="glyphicon glyphicon-edit"></span> Edit</a></td>
+                        <td><a class="btn btn-danger remove" href="#" th:data="${client.id+'-'+client.nom+'-'+client.prenom+'-'+client.nci+'-'+client.telephone}" id="remove" role="button" data-toggle="modal" data-target="#confirmModal">Supprimer</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form enctype="multipart/form-data" action="#" th:action="@{/admin/add}" th:object="${client}" id="form1" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nci" class="col-form-label">NCI:</label>
+                        <input th:field="*{nci}" type="text" class="form-control" id="nci">
+                    </div>
+                    <div class="form-group">
+                        <label for="nom" class="col-form-label">Nom:</label>
+                        <input th:field="*{nom}" type="text" class="form-control" id="nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="prenom" class="col-form-label">Prénom:</label>
+                        <input th:field="*{prenom}" type="text" class="form-control" id="prenom">
+                    </div>
+                    <div class="form-group">
+                        <label for="tel" class="col-form-label">Téléphone:</label>
+                        <input type="text" th:field="*{telephone}" class="form-control" id="tel">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="save" type="submit" class="btn btn-primary">Enregister</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Suppression d'un client</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form2" method="post" th:action="@{/admin/remove}">
+                <div class="modal-body" id="contentConfirm">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+                <input type="hidden" id="clientId" name="clientId">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    $(document).ready(function () {
+        $("#nouveau").click(function () {
+            $('#form1').attr('action','/admin/add');
+            $('.masquer').show();
+            $('#nci').val("");
+            $('#prenom').val("");
+            $('#nom').val("");
+            $('#tel').val("");
+            $('#clientid').val(0);
+        })
+
+        //update du medecin
+        function get($, bouton){
+            var idmedecin = $(bouton).attr('data');
+            $.ajax({
+                url:'/medecin/'+idmedecin,
+                type:"GET",
+                dataType:"json",
+                success:function (data) {
+                    var tabSpec = []
+                    data.specialites.forEach(e => {
+                        console.log(e)
+                        tabSpec.push(e.id)
+                    });
+                    var options = ''
+                    data.service.specialites.forEach(e => {
+                        options +="<option value='"+e.id+"'>"+e.libelle+"</option>";
+                    });
+                    console.log(tabSpec);
+                    $('#prenom').val(data.prenom);
+                    $('#nom').val(data.nom);
+                    $('#tel').val(data.tel);
+                    $('#adresse').val(data.adresse);
+                    $('#email').val(data.email);
+                    var date = "\/Date("+data.datenaissance+")\/";
+                    console.log(date);
+                    var nowDate = new Date(parseInt(date.substr(6)))
+                    console.log(nowDate)
+                    $('#datenais').val($.format.date(nowDate, 'yyyy-MM-dd'));
+                    $('#service').val(data.service.id);
+                    $('#specialite').empty();
+                    $('#specialite').append(options);
+                    $('#specialite').val(tabSpec);
+                    $('#medecinid').val(data.id);
+                },
+                error:function (err) {
+                    console.log(err);
+                }
+            })
+        }
+        //-------------------------------------------------
+        $('.edit').click(function () {
+            $('#form1').attr('action','/admin/add');
+            get($, $(this));
+            $('.masquer').hide();
+            $('#action').val('update');
+            $('#nci').removeAttr('readonly');
+            $('#prenom').removeAttr('readonly');
+            $('#nom').removeAttr('readonly');
+            $('#tel').removeAttr('readonly');
+        })
+        //---------------------------------------
+        $('.remove').click(function () {
+            var data = $(this).attr("data").split('-');
+            $('#clientId').val(data[0]);
+            $('#contentConfirm').empty();
+            $('#contentConfirm').append('Êtes-vous sur de vouloir supprimer ['+data[2]+' '+data[1]+']');
+        });
+    });
+
+</script>
+</body>
+</html>
